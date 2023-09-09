@@ -1,4 +1,6 @@
 ---
+import DarkModeScript from '../scripts/darkModeScript.astro';
+
 interface Props {
     title: string;
 }
@@ -10,7 +12,7 @@ const { title } = Astro.props;
 <html lang="en" data-theme="is set by the script below">
     <head>
         <!-- is:inline changes path resolution to public/<path> -->
-        <script type="module" is:inline src="../src/scripts/darkMode.ts"></script>
+        <DarkModeScript />
         <meta charset="UTF-8" />
         <meta name="description" content="Astro description" />
         <meta name="viewport" content="width=device-width" />
@@ -22,4 +24,3 @@ const { title } = Astro.props;
         <slot />
     </body>
 </html>
-<style is:global></style>

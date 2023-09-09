@@ -1,0 +1,36 @@
+<script is:inline>
+    // it can not have any dependencies because of "is:inline" 
+    // sadj :(
+    let theme = 'light';
+    if (localStorage.getItem('theme') !== null) {
+        theme = localStorage.getItem('theme');
+    }
+
+    function getIsDarkMode(theme) {
+        return theme === 'halloween';
+    }
+
+    function setColorMode(isDark) {
+        if (isDark) {
+            document.documentElement.setAttribute('data-theme', 'halloween');
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('theme', 'halloween');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+        }
+    }
+
+    setColorMode(getIsDarkMode(theme));
+
+    document.addEventListener('alpine:init', () => {
+        Alpine.store('darkMode', {
+            on: theme === 'halloween',
+            toggle() {
+                this.on = !this.on;
+                setColorMode(this.on);
+            },
+        });
+    });
+</script>
