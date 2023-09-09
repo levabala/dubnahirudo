@@ -71,6 +71,7 @@ jobs:
       
   remote-deploy:
     runs-on: ubuntu-latest
+    needs: [build-and-publish]
     steps:
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@v1.0.0
