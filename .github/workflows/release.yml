@@ -36,7 +36,7 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --prod
       # setup pnpm - end
 
       - name: Check types
@@ -55,19 +55,26 @@ jobs:
         with:
           yc-sa-json-credentials: ${{ secrets.YA_CLOUD_LOGIN_KEY }}
 
-      - name: Build, tag, and push image to Yandex Cloud Container Registry
-        env:
-          CR_REGISTRY: ${{ secrets.YA_CLOUD_REGISTRY }}
-          CR_REPOSITORY: dubnahirudo
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          docker buildx build --platform linux/amd64 -t cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG \
-            --load \
-            --cache-to type=gha \
-            --cache-from type=gha \
-            .
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: cr.yandex/${{ secrets.YA_CLOUD_REGISTRY }}/dubnahirudo:${{ github.sha }}
 
-          docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
+      # - name: Build, tag, and push image to Yandex Cloud Container Registry
+      #   env:
+      #     CR_REGISTRY: ${{ secrets.YA_CLOUD_REGISTRY }}
+      #     CR_REPOSITORY: dubnahirudo
+      #     IMAGE_TAG: ${{ github.sha }}
+      #   run: |
+      #     docker buildx build --platform linux/amd64 -t cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG \
+      #       --load \
+      #       --cache-to type=gha \
+      #       --cache-from type=gha \
+      #       .
+
+      #     docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
       # docker publish - end
       
       - name: executing remote ssh commands using password
