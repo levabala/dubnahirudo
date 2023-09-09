@@ -1,103 +1,103 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+'
+    push:
+        tags:
+            - 'v[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
-  build-and-publish:
-    runs-on: ubuntu-latest
-    steps:
-      # test - start
-      # setup pnpm - start
-      - name: Checkout
-        uses: actions/checkout@v3
+    build-and-publish:
+        runs-on: ubuntu-latest
+        steps:
+            # test - start
+            # setup pnpm - start
+            - name: Checkout
+              uses: actions/checkout@v3
 
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: '.nvmrc'
+            - name: Install Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version-file: '.nvmrc'
 
-      - uses: pnpm/action-setup@v2
-        name: Install pnpm
+            - uses: pnpm/action-setup@v2
+              name: Install pnpm
 
-      - name: Get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+            - name: Get pnpm store directory
+              shell: bash
+              run: |
+                  echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
-      - uses: actions/cache@v3
-        name: Setup pnpm cache
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+            - uses: actions/cache@v3
+              name: Setup pnpm cache
+              with:
+                  path: ${{ env.STORE_PATH }}
+                  key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  restore-keys: |
+                      ${{ runner.os }}-pnpm-store-
 
-      - name: Install dependencies
-        run: pnpm install --prod
-      # setup pnpm - end
+            - name: Install dependencies
+              run: pnpm install --prod
+            # setup pnpm - end
 
-      - name: Check types
-        run: pnpm tsc
-      # test - end
+            - name: Check types
+              run: pnpm tsc
+            # test - end
 
-      # build - start
-      - name: Build
-        run: pnpm build
-      # build - end
+            # build - start
+            - name: Build
+              run: pnpm build
+            # build - end
 
-      # docker publish - start
-      - name: Login to Yandex Cloud Container Registry
-        id: login-cr
-        uses: yc-actions/yc-cr-login@v1
-        with:
-          yc-sa-json-credentials: ${{ secrets.YA_CLOUD_LOGIN_KEY }}
+            # docker publish - start
+            - name: Login to Yandex Cloud Container Registry
+              id: login-cr
+              uses: yc-actions/yc-cr-login@v1
+              with:
+                  yc-sa-json-credentials: ${{ secrets.YA_CLOUD_LOGIN_KEY }}
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v2
 
-      - name: Pack to container and push
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: cr.yandex/${{ secrets.YA_CLOUD_REGISTRY }}/dubnahirudo:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          provenance: false
-      # docker publish - end
-      
-  remote-deploy:
-    runs-on: ubuntu-latest
-    needs: [build-and-publish]
-    steps:
-      - name: executing remote ssh commands using password
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-            host: ${{ secrets.YA_CLOUD_PROD_HOST }}
-            username: ${{ secrets.YA_CLOUD_PROD_USERNAME }}
-            key: ${{ secrets.YA_CLOUD_PROD_KEY }}
-            port: ${{ secrets.YA_CLOUD_PROD_PORT }}
-            script: |
-              if [ -x "$(command -v docker)" ]; then
-                echo "Docker is already installed"
-              else
-                curl -fsSL https://get.docker.com -o get-docker.sh
-                sh get-docker.sh
+            - name: Pack to container and push
+              uses: docker/build-push-action@v4
+              with:
+                  context: .
+                  push: true
+                  tags: cr.yandex/${{ secrets.YA_CLOUD_REGISTRY }}/dubnahirudo:${{ github.sha }}
+                  cache-from: type=gha
+                  cache-to: type=gha,mode=max
+                  provenance: false
+            # docker publish - end
 
-                sudo systemctl enable docker
-                sudo systemctl start docker
-                sudo chmod 666 /var/run/docker.sock
-              fi
+    remote-deploy:
+        runs-on: ubuntu-latest
+        needs: [build-and-publish]
+        steps:
+            - name: executing remote ssh commands using password
+              uses: appleboy/ssh-action@v1.0.0
+              with:
+                  host: ${{ secrets.YA_CLOUD_PROD_HOST }}
+                  username: ${{ secrets.YA_CLOUD_PROD_USERNAME }}
+                  key: ${{ secrets.YA_CLOUD_PROD_KEY }}
+                  port: ${{ secrets.YA_CLOUD_PROD_PORT }}
+                  script: |
+                      if [ -x "$(command -v docker)" ]; then
+                        echo "Docker is already installed"
+                      else
+                        curl -fsSL https://get.docker.com -o get-docker.sh
+                        sh get-docker.sh
 
-              echo '${{ secrets.YA_CLOUD_LOGIN_KEY }}' | docker login --username json_key --password-stdin cr.yandex
+                        sudo systemctl enable docker
+                        sudo systemctl start docker
+                        sudo chmod 666 /var/run/docker.sock
+                      fi
 
-              CONTAINER_ID=$(docker container ls  | grep 'dubnahirudo' | awk '{print $1}')
-              if [ $CONTAINER_ID ]; then
-                docker stop $CONTAINER_ID
-              fi
+                      echo '${{ secrets.YA_CLOUD_LOGIN_KEY }}' | docker login --username json_key --password-stdin cr.yandex
 
-              docker pull cr.yandex/${{ secrets.YA_CLOUD_REGISTRY }}/dubnahirudo:${{ github.sha }}
-              docker run -d -p 80:80 cr.yandex/${{ secrets.YA_CLOUD_REGISTRY }}/dubnahirudo:${{ github.sha }}
+                      CONTAINER_ID=$(docker container ls  | grep 'dubnahirudo' | awk '{print $1}')
+                      if [ $CONTAINER_ID ]; then
+                        docker stop $CONTAINER_ID
+                      fi
+
+                      docker pull cr.yandex/${{ secrets.YA_CLOUD_REGISTRY }}/dubnahirudo:${{ github.sha }}
+                      docker run -d -p 80:80 cr.yandex/${{ secrets.YA_CLOUD_REGISTRY }}/dubnahirudo:${{ github.sha }}

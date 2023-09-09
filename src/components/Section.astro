@@ -1,0 +1,13 @@
+---
+interface Props {
+    fullWidth?: boolean;
+    fullHeight?: boolean;
+    class?: string;
+}
+
+const { class: className, fullWidth, fullHeight } = Astro.props;
+---
+
+<section class:list={[{ 'px-4': !fullWidth, 'py-8': !fullHeight }, className]}>
+    <slot />
+</section>
