@@ -1,3 +1,4 @@
-FROM httpd:2.4 AS runtime
-COPY dist /usr/local/apache2/htdocs/
+FROM nginx:alpine AS runtime
+COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+COPY dist /usr/share/nginx/html
 EXPOSE 80
