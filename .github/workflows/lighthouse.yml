@@ -1,0 +1,21 @@
+name: Lighthouse CI
+
+on:
+  workflow_run:
+    workflows: [Release]
+    types:
+      - completed
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Audit URLs using Lighthouse
+        uses: treosh/lighthouse-ci-action@v10
+        with:
+          urls: |
+            http://84.252.128.95/
+          uploadArtifacts: true
+          temporaryPublicStorage: true
