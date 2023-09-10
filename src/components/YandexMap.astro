@@ -1,15 +1,17 @@
 <div
     class="relative"
-    x-data="{ activated: false }"
+    x-data="{ activated: false, loadIframe: false }"
     x-on:mousedown="activated = true"
     x-on:touchstart="activated = true"
     x-bind:class="activated && 'activated'"
 >
     <iframe
         x-bind:class="{ 'invert hue-rotate-180': $store.darkMode.on, 'opacity-70': !activated }"
-        src="https://yandex.com/map-widget/v1/?um=constructor%3Adead52da76876f1a95afad8d7610397d838178219265d4e724e3f68517a515a6&source=constructor"
+        x-bind:src="loadIframe && 'https://yandex.com/map-widget/v1/?um=constructor%3Adead52da76876f1a95afad8d7610397d838178219265d4e724e3f68517a515a6&source=constructor'"
+        x-on:load.window="loadIframe = true"
         width="100%"
         height="300"
+        loading="lazy"
         class="border-0"></iframe>
 
     <!-- this div allows the parent div to receive onclick events -->
