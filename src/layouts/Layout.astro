@@ -11,6 +11,7 @@ const { title } = Astro.props;
 <!doctype html>
 <html lang="en" data-theme="is set by the script below">
     <head>
+        <slot name="head" />
         <!-- is:inline changes path resolution to public/<path> -->
         <DarkModeScript />
         <meta charset="UTF-8" />

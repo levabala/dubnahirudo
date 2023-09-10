@@ -11,17 +11,27 @@ import SectionBlock from '../components/SectionBlock.astro';
 import SectionBlockHeader from '../components/SectionBlockHeader.astro';
 import YandexMap from '../components/YandexMap.astro';
 
-const clinicReceptionOptimized = await getImage({ src: clinicReception });
+const frontImageMobile = await getImage({ src: clinicReception, height: 800 });
+const frontImageDesktop = await getImage({
+    src: clinicReception,
+    height: 1200,
+});
+
+const frontImageMobileSrc = frontImageMobile.src;
+const frontImageDesktopSrc = frontImageDesktop.src;
 ---
 
 <Layout title="Welcome to Astro. DUBNA ASTRO!">
+    <!-- TODO: preload either the mobile or desktop image version -->
+    <link
+        slot="head"
+        rel="preload"
+        as="image"
+        href={frontImageMobileSrc}
+    />
     <Main>
         <Section fullWidth fullHeight>
-            <div
-                class="h-[70vh] bg-cover bg-center"
-                style={`background-image: url(${clinicReceptionOptimized.src});`}
-            >
-            </div>
+            <div class="front-image h-[70vh] bg-cover bg-center"></div>
         </Section>
         <Section class="bg-neutral-content dark:bg-neutral">
             <SectionBlock>
@@ -75,3 +85,19 @@ const clinicReceptionOptimized = await getImage({ src: clinicReception });
         </Section>
     </Main>
 </Layout>
+<style
+    define:vars={{
+        frontImageMobile: `url(${frontImageMobileSrc})`,
+        frontImageDesktop: `url(${frontImageDesktopSrc})`,
+    }}
+>
+    .front-image {
+        background-image: var(--frontImageMobile);
+    }
+
+    @media (min-width: 767px) {
+        .front-image {
+            background-image: var(--frontImageDesktop);
+        }
+    }
+</style>
