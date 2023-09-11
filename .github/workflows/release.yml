@@ -24,7 +24,7 @@ jobs:
                   echo "STORE_PATH=$HOME/.bun/install/cache" >> $GITHUB_ENV
 
             - uses: actions/cache@v3
-              name: Setup pnpm cache
+              name: Setup bun cache
               with:
                   path: ${{ env.STORE_PATH }}
                   key: ${{ runner.os }}-bun-store-${{ hashFiles('**/bun.lockb') }}
