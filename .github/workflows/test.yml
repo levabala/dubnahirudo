@@ -12,34 +12,17 @@ jobs:
     test:
         runs-on: ubuntu-latest
         steps:
-            # setup pnpm - start
+            # setup bun - start
             - name: Checkout
               uses: actions/checkout@v3
 
-            - name: Install Node.js
-              uses: actions/setup-node@v3
+            - uses: oven-sh/setup-bun@v1
               with:
-                  node-version-file: '.nvmrc'
-
-            - uses: pnpm/action-setup@v2
-              name: Install pnpm
-
-            - name: Get pnpm store directory
-              shell: bash
-              run: |
-                  echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-            - uses: actions/cache@v3
-              name: Setup pnpm cache
-              with:
-                  path: ${{ env.STORE_PATH }}
-                  key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-                  restore-keys: |
-                      ${{ runner.os }}-pnpm-store-
+                bun-version: latest
 
             - name: Install dependencies
-              run: pnpm install --prod
-            # setup pnpm - end
+              run: bun install --production --frozen-lockfile
+            # setup bun - end
 
             - name: Check types
-              run: pnpm tsc
+              run: bun run tsc
