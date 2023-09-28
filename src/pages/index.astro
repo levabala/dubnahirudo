@@ -3,6 +3,7 @@ import { Image, getImage } from 'astro:assets';
 
 import clinicReception from '../assets/clinic-reception.jpg';
 import doctorCrop from '../assets/doctor-crop.jpg';
+const acupunctureExample = "https://wthn.com/cdn/shop/files/AcuBackWTHN-199_300_800x.jpg?v=1619020589"
 
 import Layout from '../layouts/Layout.astro';
 import Main from '../layouts/Main.astro';
@@ -81,10 +82,11 @@ const frontImageDesktopSrc = frontImageDesktop.src;
         </Section>
         <Section fullWidth fullHeight>
             <Image
-                src="https://wthn.com/cdn/shop/files/AcuBackWTHN-199_300_800x.jpg?v=1619020589"
+                src={acupunctureExample}
                 width={800}
                 height={996}
                 alt="иглы лол"
+                class="object-contain max-h-[600px] mx-auto"
             />
         </Section>
         <Section>
