@@ -1,7 +1,8 @@
 ---
-import { getImage } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 
 import clinicReception from '../assets/clinic-reception.jpg';
+import doctorCrop from '../assets/doctor-crop.jpg';
 
 import Layout from '../layouts/Layout.astro';
 import Main from '../layouts/Main.astro';
@@ -23,64 +24,116 @@ const frontImageDesktopSrc = frontImageDesktop.src;
 
 <Layout title="Welcome to Astro. DUBNA ASTRO!">
     <!-- TODO: preload either the mobile or desktop image version -->
-    <link
-        slot="head"
-        rel="preload"
-        as="image"
-        href={frontImageMobileSrc}
-    />
+    <link slot="head" rel="preload" as="image" href={frontImageMobileSrc} />
     <Main>
         <Section fullWidth fullHeight>
             <div class="front-image h-[70vh] bg-cover bg-center"></div>
         </Section>
         <Section class="bg-neutral-content dark:bg-neutral">
             <SectionBlock>
-                <SectionHeader>Location & Hours</SectionHeader>
-                <p class="text-center">
-                    Olo Acupuncture is located between the Manhattan
-                    neighborhoods of Chelsea and Flatiron. We're a quick walk
-                    from Penn Station, the Garment District, NoMad and Union
-                    Square, and easily accessible via Subway from just about
-                    everywhere else in New York City.
-                </p>
+                <SectionHeader>Локация и время работы</SectionHeader>
+                <div class="text-center text-2xl font-semibold">
+                    Клиника Гирудотерапии
+                </div>
+                <div class="text-center">
+                    <span class="whitespace-nowrap">Московская обл.</span>,
+                    <span class="whitespace-nowrap">г. Дубна</span>,
+                    <span class="whitespace-nowrap">пр-т Боголюбова</span>, д.39
+                    (вход со двора)
+                </div>
             </SectionBlock>
 
             <SectionBlock>
-                <div class="text-center text-2xl">Klinica hirudoterapii</div>
-                <div class="text-center">Dubna, Bogolubova Avenue, 39</div>
-            </SectionBlock>
-
-            <SectionBlock>
-                <SectionBlockHeader>Hours & Schedule</SectionBlockHeader>
-                <div class="text-center">Mondays - Fridays 10 AM - 8 PM</div>
-                <div class="text-center">Saturdays 10 AM - 4 PM</div>
+                <div class="text-center">Вторник, Четверг 13-19</div>
+                <div class="text-center">Суббота 10-14</div>
+                <a href="tel:+79037755656" class="link block text-center"
+                    >+7(903)775-56-56</a
+                >
             </SectionBlock>
         </Section>
         <Section fullWidth fullHeight>
             <YandexMap />
         </Section>
         <Section>
-            <h3 class="mb-2 text-center text-2xl">
-                Safe, Effective <br /> & Drug Free
-            </h3>
+            <SectionHeader>Иглорефлексотерапия</SectionHeader>
             <p class="text-center">
-                Acupuncture and Traditional Chinese Medicine (TCM) are a safe,
-                effective and drug free option for treatment of most
-                non-emergency conditions.
+                Иглорефлексотерапия - безопасный и эффективный немедикаментозный
+                способ лечения большинства болезненных состояний
             </p>
         </Section>
         <Section class="bg-neutral-content dark:bg-neutral">
-            <SectionHeader>Treating from the Root</SectionHeader>
+            <SectionBlockHeader>Восстановление баланса</SectionBlockHeader>
             <p class="text-center">
-                With treatments focused on the root of the imbalance and not
-                just the symptoms
+                Рефлексотерапия направлена на исправление источника проблема, а
+                не только симптомов
             </p>
         </Section>
         <Section>
-            <SectionHeader>Common to Dwarvish Translator</SectionHeader>
+            <SectionBlockHeader>Показания</SectionBlockHeader>
             <p class="text-center">
-                Udovr, hjav hlastan frarth thjel skegga, jektor ar veggog udovr
-                hjav hjana frarth jr ojti. Hee hoo urndlikr denthar vormark!
+                Иглорефлексотерапия применяется для лечения широкого спектра
+                заболеваний <b>суставов</b>, <b>сердца</b> и <b>сосудов</b>, <b
+                    >легких</b
+                >, проблем с
+                <b>гормонами</b>, а также <b>зависимостей</b> (никотиновой и
+                алкогольной) и проблем <b>лишнего веса</b>
+            </p>
+        </Section>
+        <Section fullWidth fullHeight>
+            <Image
+                src="https://wthn.com/cdn/shop/files/AcuBackWTHN-199_300_800x.jpg?v=1619020589"
+                width={800}
+                height={996}
+                alt="иглы лол"
+            />
+        </Section>
+        <Section>
+            <SectionHeader>Гирудотерапия</SectionHeader>
+            <p class="text-center">
+                Гирудотерапия - лечение пиявками, решающее местные и глобальные
+                проблемы организма
+            </p>
+        </Section>
+        <Section class="bg-base-300 dark:bg-base-300">
+            <SectionBlockHeader>Древневосточный метод</SectionBlockHeader>
+            <p class="text-center">
+                Пиявки применялись в лечебных целях еще за тысячу лет до
+                рождества Христова. Первое упоминание датируется 1550 годом до
+                нашей эры - в Древнем Египте
+            </p>
+        </Section>
+        <Section>
+            <SectionBlockHeader>Воздействие</SectionBlockHeader>
+            <p class="text-center">
+                Пиявка восстанавливает организм двумя способами:
+            </p>
+            <ul class="my-2 flex flex-col text-center">
+                <li>
+                    <b>Механически</b>, разгружая и нормализируя кровоток
+                </li>
+                <li>
+                    <b>Биологически</b>, благодаря наличию в слюне пиявки целой
+                    гаммы биологически активных веществ
+                </li>
+            </ul>
+        </Section>
+        <Section class="bg-neutral-content dark:bg-neutral">
+            <Image
+                src={doctorCrop}
+                alt="доктор"
+                class="mx-auto aspect-square max-w-xs rounded-full object-cover pb-4"
+            />
+            <SectionHeader>Чистякова Ольга Николаевна</SectionHeader>
+            <p class="text-center">
+                Врач
+                <span class="whitespace-nowrap">1 категории</span>, выпускница
+                Тяньцзиньского университета по курсу "Практического применения
+                методов акупунктуры и фито-терапии" у профессора Ван Вей.
+            </p>
+            <p class="pt-2 text-center">
+                Ольга Николаевна имеет более чем 20 летний практический опыт работы,
+                является учеником и последователем известной методики Мастера
+                Традиционной Китайской Медицины - Фалева Алексея Ивановича.
             </p>
         </Section>
     </Main>
