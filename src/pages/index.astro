@@ -3,7 +3,8 @@ import { Image, getImage } from 'astro:assets';
 
 import clinicReception from '../assets/clinic-reception.jpg';
 import doctorCrop from '../assets/doctor-crop.jpg';
-const acupunctureExample = "https://wthn.com/cdn/shop/files/AcuBackWTHN-199_300_800x.jpg?v=1619020589"
+const acupunctureExample =
+    'https://wthn.com/cdn/shop/files/AcuBackWTHN-199_300_800x.jpg?v=1619020589';
 
 import Layout from '../layouts/Layout.astro';
 import Main from '../layouts/Main.astro';
@@ -28,7 +29,7 @@ const frontImageDesktopSrc = frontImageDesktop.src;
     <link slot="head" rel="preload" as="image" href={frontImageMobileSrc} />
     <Main>
         <Section fullWidth fullHeight>
-            <div class="front-image h-[70vh] bg-cover bg-center"></div>
+                <div class="front-image h-[70vh] bg-cover bg-center"/>
         </Section>
         <Section class="bg-neutral-content dark:bg-neutral">
             <SectionBlock>
@@ -86,7 +87,7 @@ const frontImageDesktopSrc = frontImageDesktop.src;
                 width={800}
                 height={996}
                 alt="иглы лол"
-                class="object-contain max-h-[600px] mx-auto"
+                class="mx-auto max-h-[600px] object-contain"
             />
         </Section>
         <Section>
@@ -133,9 +134,10 @@ const frontImageDesktopSrc = frontImageDesktop.src;
                 методов акупунктуры и фито-терапии" у профессора Ван Вей.
             </p>
             <p class="pt-2 text-center">
-                Ольга Николаевна имеет более чем 20 летний практический опыт работы,
-                является учеником и последователем известной методики Мастера
-                Традиционной Китайской Медицины - Фалева Алексея Ивановича.
+                Ольга Николаевна имеет более чем 20 летний практический опыт
+                работы, является учеником и последователем известной методики
+                Мастера Традиционной Китайской Медицины - Фалева Алексея
+                Ивановича.
             </p>
         </Section>
     </Main>
