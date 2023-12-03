@@ -1,5 +1,6 @@
 ---
 import DarkModeScript from '../scripts/darkModeScript.astro';
+import HotjarScript from '../scripts/hotjarScript.astro';
 
 interface Props {
     title: string;
@@ -12,14 +13,16 @@ const { title } = Astro.props;
 <html lang="en" data-theme="is set by the script below">
     <head>
         <slot name="head" />
-        <!-- is:inline changes path resolution to public/<path> -->
-        <DarkModeScript />
         <meta charset="UTF-8" />
         <meta name="description" content="Astro description" />
         <meta name="viewport" content="width=device-width" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <meta name="generator" content={Astro.generator} />
         <title>{title}</title>
+
+        <!-- is:inline changes path resolution to public/<path> -->
+        <DarkModeScript />
+        <HotjarScript />
     </head>
     <body class="text-base">
         <slot />
