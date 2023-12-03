@@ -3,8 +3,8 @@ import { Image, getImage } from 'astro:assets';
 
 import clinicReception from '../assets/clinic-reception.jpg';
 import doctorCrop from '../assets/doctor-crop.jpg';
-const acupunctureExample =
-    'https://wthn.com/cdn/shop/files/AcuBackWTHN-199_300_800x.jpg?v=1619020589';
+import acupunctureShoulder from '../assets/acupuncture-shoulder.jpg';
+import leechesTopdown from '../assets/leeches_topdown.jpg';
 
 import Layout from '../layouts/Layout.astro';
 import Main from '../layouts/Main.astro';
@@ -84,11 +84,10 @@ const frontImageDesktopSrc = frontImageDesktop.src;
         </Section>
         <Section fullWidth fullHeight>
             <Image
-                src={acupunctureExample}
-                width={800}
-                height={996}
+                src={acupunctureShoulder}
+                height={700}
                 alt="иглы лол"
-                class="mx-auto max-h-[600px] object-contain"
+                class="mx-auto max-h-[700px] object-contain"
             />
         </Section>
         <Section>
@@ -105,6 +104,14 @@ const frontImageDesktopSrc = frontImageDesktop.src;
                 рождества Христова. Первое упоминание датируется 1550 годом до
                 нашей эры - в Древнем Египте
             </p>
+        </Section>
+        <Section fullWidth fullHeight>
+            <Image
+                src={leechesTopdown}
+                height={700}
+                alt="пиявки"
+                class="mx-auto max-h-[700px] object-contain"
+            />
         </Section>
         <Section>
             <SectionBlockHeader>Воздействие</SectionBlockHeader>
