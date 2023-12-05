@@ -1,8 +1,8 @@
 ---
 import DarkModeScript from '../scripts/darkModeScript.astro';
-import HotjarScript from '../scripts/hotjarScript.astro';
+import PosthogScript from '../scripts/posthogScript.astro';
 import VkScript from '../scripts/vkScript.astro';
-
+import '../scripts/posthogInit.js';
 
 interface Props {
     title: string;
@@ -24,7 +24,7 @@ const { title } = Astro.props;
 
         <!-- is:inline changes path resolution to public/<path> -->
         <DarkModeScript />
-        <HotjarScript />
+        <PosthogScript />
         <VkScript />
     </head>
     <body class="text-base">
