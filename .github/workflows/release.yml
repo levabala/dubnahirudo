@@ -97,3 +97,7 @@ jobs:
 
                       docker pull cr.yandex/${{ secrets.YA_CLOUD_REGISTRY }}/dubnahirudo:${{ github.sha }}
                       docker run -d -p 80:80 cr.yandex/${{ secrets.YA_CLOUD_REGISTRY }}/dubnahirudo:${{ github.sha }}
+
+                      CONTAINER_ID=$(docker container ls  | grep 'dubnahirudo' | awk '{print $1}')
+                      docker run -v /etc/certs:/certs -d CONTAINER_ID "update-ca-certificates"
+
