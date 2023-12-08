@@ -97,4 +97,4 @@ jobs:
 
                       IMAGE_ID=cr.yandex/${{ secrets.YA_CLOUD_REGISTRY }}/dubnahirudo:${{ github.sha }}
                       docker pull $IMAGE_ID
-                      docker run -d -p 80:80 -v /etc/certs:/certs $IMAGE_ID
+                      docker run -d -p 80:80 -p 443:443 -v /etc/certs:/certs $IMAGE_ID
