@@ -1,7 +1,6 @@
 ---
-import { Image, getImage } from 'astro:assets';
+import { Image } from 'astro:assets';
 
-import clinicReception from '../assets/clinic-reception.jpg';
 import doctorCrop from '../assets/doctor-crop.jpg';
 import acupunctureShoulder from '../assets/acupuncture-shoulder.jpg';
 import leechesTopdown from '../assets/leeches_topdown.jpg';
@@ -13,25 +12,10 @@ import SectionHeader from '../components/SectionHeader.astro';
 import SectionBlock from '../components/SectionBlock.astro';
 import SectionBlockHeader from '../components/SectionBlockHeader.astro';
 import YandexMap from '../components/YandexMap.astro';
-
-const frontImageMobile = await getImage({ src: clinicReception, height: 800 });
-const frontImageDesktop = await getImage({
-    src: clinicReception,
-    height: 1200,
-});
-
-const frontImageMobileSrc = frontImageMobile.src;
-const frontImageDesktopSrc = frontImageDesktop.src;
 ---
 
 <Layout title="Клиника Гирудотерапии">
-    <!-- TODO: preload either the mobile or desktop image version -->
-    <link slot="head" rel="preload" as="image" href={frontImageMobileSrc} />
     <Main>
-        <Section fullWidth fullHeight>
-            <div class="front-image h-[70vh] bg-base-200 bg-cover bg-center">
-            </div>
-        </Section>
         <Section class="bg-neutral-content dark:bg-neutral">
             <SectionBlock>
                 <SectionHeader>Локация и время работы</SectionHeader>
@@ -199,7 +183,7 @@ const frontImageDesktopSrc = frontImageDesktop.src;
         </Section>
         <a
             href="tel:+79037755656"
-            class="fadeIn w-16 h-16 rounded-full inline-flex justify-center items-center fixed bottom-4 right-4 mx-auto my-0 border-0 bg-[#41b93c] hover:bg-[#31c62b] text-center"
+            class="fadeIn fixed bottom-4 right-4 mx-auto my-0 inline-flex h-16 w-16 items-center justify-center rounded-full border-0 bg-[#41b93c] text-center hover:bg-[#31c62b]"
         >
             <svg
                 class="h-[32px] w-[32px]"
@@ -216,22 +200,7 @@ const frontImageDesktopSrc = frontImageDesktop.src;
         </a>
     </Main>
 </Layout>
-<style
-    define:vars={{
-        frontImageMobile: `url(${frontImageMobileSrc})`,
-        frontImageDesktop: `url(${frontImageDesktopSrc})`,
-    }}
->
-    .front-image {
-        background-image: var(--frontImageMobile);
-    }
-
-    @media (min-width: 767px) {
-        .front-image {
-            background-image: var(--frontImageDesktop);
-        }
-    }
-
+<style>
     .fadeIn {
         opacity: 0;
         visibility: hidden;
