@@ -16,12 +16,19 @@ import YandexMap from '../components/YandexMap.astro';
 
 <Layout title="Клиника Гирудотерапии">
     <Main>
+        <Section>
+            <SectionBlock>
+                <SectionHeader>Кто мы</SectionHeader>
+                <p class="text-center">
+                    Добро пожаловать в Клинику Гирудотерапии – ваш путь к заботе
+                    о здоровье с использованием безопасных и эффективных методов
+                    лечения.
+                </p>
+            </SectionBlock>
+        </Section>
         <Section class="bg-neutral-content dark:bg-neutral">
             <SectionBlock>
-                <SectionHeader>Локация и время работы</SectionHeader>
-                <div class="text-center text-2xl font-semibold">
-                    Клиника Гирудотерапии
-                </div>
+                <SectionHeader>Где и когда нас найти</SectionHeader>
                 <div class="text-center">
                     <span class="whitespace-nowrap">Московская обл.</span>,
                     <span class="whitespace-nowrap">г. Дубна</span>,
@@ -62,9 +69,8 @@ import YandexMap from '../components/YandexMap.astro';
             <SectionBlockHeader>Показания</SectionBlockHeader>
             <p class="text-center">
                 Иглорефлексотерапия применяется для лечения широкого спектра
-                заболеваний <b>суставов</b>, <b>сердца</b> и <b>сосудов</b>, <b>
-                    легких
-                </b>, проблем с
+                заболеваний <b>суставов</b>, <b>сердца</b> и <b>сосудов</b>,
+                <b>легких</b>, проблем с
                 <b>гормонами</b>, а также <b>зависимостей</b> (никотиновой и
                 алкогольной) и проблем <b>лишнего веса</b>
             </p>
@@ -110,7 +116,7 @@ import YandexMap from '../components/YandexMap.astro';
                 активных веществ.
             </p>
         </Section>
-        <hr />
+        <hr class="border-t-2" />
         <Section class="flex">
             <a
                 href="tel:+79037755656"
@@ -156,7 +162,7 @@ import YandexMap from '../components/YandexMap.astro';
                     </tr>
                     <tr>
                         <td>Снижение веса</td>
-                        <td><span>от</span>4000 руб.</td>
+                        <td>от 4000 руб.</td>
                     </tr>
                 </tbody>
             </table>
