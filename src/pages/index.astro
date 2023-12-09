@@ -48,6 +48,26 @@ import YandexMap from '../components/YandexMap.astro';
                 </a>
             </SectionBlock>
         </Section>
+        <Section>
+            <Image
+                src={doctorCrop}
+                alt="доктор"
+                class="mx-auto aspect-square max-w-xs rounded-full object-cover pb-4"
+            />
+            <SectionHeader>Чистякова Ольга Николаевна</SectionHeader>
+            <p class="text-center">
+                Врач
+                <span class="whitespace-nowrap">1 категории</span>, выпускница
+                Тяньцзиньского университета по курсу "Практического применения
+                методов акупунктуры и фито-терапии" у профессора Ван Вей.
+            </p>
+            <p class="pt-2 text-center">
+                Ольга Николаевна имеет более чем 20 летний практический опыт
+                работы, является учеником и последователем известной методики
+                Мастера Традиционной Китайской Медицины - Фалева Алексея
+                Ивановича.
+            </p>
+        </Section>
         <Section class="bg-base-100" fullWidth fullHeight>
             <YandexMap />
         </Section>
@@ -98,14 +118,6 @@ import YandexMap from '../components/YandexMap.astro';
                 нашей эры - в Древнем Египте
             </p>
         </Section>
-        <Section fullWidth fullHeight>
-            <Image
-                src={leechesTopdown}
-                height={700}
-                alt="пиявки"
-                class="mx-auto max-h-[700px] object-contain"
-            />
-        </Section>
         <Section>
             <SectionBlockHeader>Воздействие</SectionBlockHeader>
             <p class="text-center">
@@ -116,18 +128,17 @@ import YandexMap from '../components/YandexMap.astro';
                 активных веществ.
             </p>
         </Section>
-        <hr class="border-t-2" />
-        <Section class="flex">
-            <a
-                href="tel:+79037755656"
-                class="btn btn-primary mx-auto my-0 text-center"
-            >
-                Записаться на приeм
-            </a>
+        <Section fullWidth fullHeight>
+            <Image
+                src={leechesTopdown}
+                height={700}
+                alt="пиявки"
+                class="mx-auto max-h-[700px] object-contain"
+            />
         </Section>
-        <Section class="bg-neutral-content dark:bg-neutral">
+        <Section>
             <SectionBlockHeader>Цены</SectionBlockHeader>
-            <table class="table">
+            <table class="table table-zebra">
                 <tbody>
                     <tr>
                         <td>Общая консультация</td>
@@ -167,44 +178,33 @@ import YandexMap from '../components/YandexMap.astro';
                 </tbody>
             </table>
         </Section>
-        <Section>
-            <Image
-                src={doctorCrop}
-                alt="доктор"
-                class="mx-auto aspect-square max-w-xs rounded-full object-cover pb-4"
-            />
-            <SectionHeader>Чистякова Ольга Николаевна</SectionHeader>
-            <p class="text-center">
-                Врач
-                <span class="whitespace-nowrap">1 категории</span>, выпускница
-                Тяньцзиньского университета по курсу "Практического применения
-                методов акупунктуры и фито-терапии" у профессора Ван Вей.
-            </p>
-            <p class="pt-2 text-center">
-                Ольга Николаевна имеет более чем 20 летний практический опыт
-                работы, является учеником и последователем известной методики
-                Мастера Традиционной Китайской Медицины - Фалева Алексея
-                Ивановича.
-            </p>
-        </Section>
-        <a
-            href="tel:+79037755656"
-            class="fadeIn fixed bottom-4 right-4 mx-auto my-0 inline-flex h-16 w-16 items-center justify-center rounded-full border-0 bg-[#41b93c] text-center hover:bg-[#31c62b]"
-        >
-            <svg
-                class="h-[32px] w-[32px]"
-                focusable="false"
-                aria-hidden="true"
-                viewBox="0 0 24 24"
-                fill="white"
+        <Section class="flex">
+            <a
+                href="tel:+79037755656"
+                class="btn btn-primary mx-auto my-0 text-center"
             >
-                <path
-                    d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"
-                >
-                </path>
-            </svg>
-        </a>
+                Записаться на приeм
+            </a>
+        </Section>
     </Main>
+
+    <a
+        href="tel:+79037755656"
+        class="fadeIn fixed bottom-4 right-4 mx-auto my-0 inline-flex h-14 w-14 items-center justify-center rounded-full border-0 bg-[#41b93c] text-center hover:bg-[#31c62b]"
+    >
+        <svg
+            class="h-[32px] w-[32px]"
+            focusable="false"
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            fill="white"
+        >
+            <path
+                d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"
+            >
+            </path>
+        </svg>
+    </a>
 </Layout>
 <style>
     .fadeIn {
@@ -226,5 +226,10 @@ import YandexMap from '../components/YandexMap.astro';
             visibility: visible;
             opacity: 1;
         }
+    }
+
+    .table :where(th, td) {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
     }
 </style>
