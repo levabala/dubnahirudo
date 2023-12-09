@@ -10,7 +10,7 @@ module.exports = {
         logs: false,
         themes: [
             'light',
-            'halloween',
+            'dracula',
         ],
     },
 };

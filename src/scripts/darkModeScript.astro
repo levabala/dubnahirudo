@@ -1,24 +1,27 @@
 <script is:inline>
+    const THEME_NAME_DARK = 'dracula';
+    const THEME_NAME_LIGHT = 'light';
+
     // it can not have any dependencies because of "is:inline" 
     // sadj :(
-    let theme = 'light';
+    let theme = THEME_NAME_LIGHT;
     if (localStorage.getItem('theme') !== null) {
         theme = localStorage.getItem('theme');
     }
 
     function getIsDarkMode(theme) {
-        return theme === 'halloween';
+        return theme === THEME_NAME_DARK;
     }
 
     function setColorMode(isDark) {
         if (isDark) {
-            document.documentElement.setAttribute('data-theme', 'halloween');
+            document.documentElement.setAttribute('data-theme', THEME_NAME_DARK);
             document.documentElement.classList.add('dark');
-            localStorage.setItem('theme', 'halloween');
+            localStorage.setItem('theme', THEME_NAME_DARK);
         } else {
-            document.documentElement.setAttribute('data-theme', 'light');
+            document.documentElement.setAttribute('data-theme', THEME_NAME_LIGHT);
             document.documentElement.classList.remove('dark');
-            localStorage.setItem('theme', 'light');
+            localStorage.setItem('theme', THEME_NAME_LIGHT);
         }
     }
 
@@ -26,7 +29,7 @@
 
     document.addEventListener('alpine:init', () => {
         Alpine.store('darkMode', {
-            on: theme === 'halloween',
+            on: theme === THEME_NAME_DARK,
             toggle() {
                 this.on = !this.on;
                 setColorMode(this.on);
