@@ -4,68 +4,25 @@ import SunIcon from '../icons/sun.astro';
 ---
 
 <nav>
-    <div class="drawer z-50">
-        <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
-
-        <div class="drawer-content flex flex-col">
-            <div class="navbar w-full justify-between bg-base-300">
-                <div class="flex-none lg:hidden">
-                    <label for="my-drawer-3" class="btn btn-square btn-ghost">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            class="inline-block h-6 w-6 stroke-current"
-                            ><path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M4 6h16M4 12h16M4 18h16"></path></svg
-                        >
-                    </label>
-                </div>
-                <div class="hidden lg:block">
-                    <ul class="menu menu-horizontal">
-                        {
-                            /*
-                        <li><a>Navbar Item 1</a></li>
-                        <li><a>Navbar Item 2</a></li>
-*/
-                        }
-                    </ul>
-                </div>
-                <button
-                    class="btn"
-                    x-data
-                    x-on:click="$store.darkMode.toggle()"
-                >
-                    <span
-                        class="invisible"
-                        x-data
-                        x-bind:class={`{
+    <div class="navbar w-full justify-end bg-base-300">
+        <button class="btn" x-data x-on:click="$store.darkMode.toggle()">
+            <span
+                class="invisible"
+                x-data
+                x-bind:class={`{
                             'invisible': $store.darkMode.on,
                             'hidden': $store.darkMode.on
                         }`}
-                    >
-                        <MoonIcon />
-                    </span>
-                    <span
-                        class="hidden"
-                        x-data
-                        x-bind:class="{ 'hidden': !$store.darkMode.on }"
-                    >
-                        <SunIcon />
-                    </span>
-                </button>
-            </div>
-        </div>
-
-        <div class="drawer-side">
-            <label for="my-drawer-3" class="drawer-overlay"></label>
-            <ul class="menu min-h-full w-80 bg-base-200 p-4">
-                <li><a>Sidebar Item 69</a></li>
-                <li><a>Sidebar Item 420</a></li>
-            </ul>
-        </div>
+            >
+                <MoonIcon />
+            </span>
+            <span
+                class="hidden"
+                x-data
+                x-bind:class="{ 'hidden': !$store.darkMode.on }"
+            >
+                <SunIcon />
+            </span>
+        </button>
     </div>
 </nav>
