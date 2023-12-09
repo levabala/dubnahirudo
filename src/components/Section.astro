@@ -8,6 +8,6 @@ interface Props {
 const { class: className, fullWidth, fullHeight } = Astro.props;
 ---
 
-<section class:list={[{ 'px-4': !fullWidth, 'py-8': !fullHeight }, className]}>
+<section class:list={[{ 'px-4': !fullWidth, 'py-4': !fullHeight }, className]}>
     <slot />
 </section>
