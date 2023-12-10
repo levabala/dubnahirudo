@@ -7,7 +7,7 @@
 >
     <iframe
         x-bind:class="{ 'invert hue-rotate-180': $store.darkMode.on, 'opacity-70': !activated }"
-        x-bind:src="loadIframe && 'https://yandex.com/map-widget/v1/?um=constructor%3Adead52da76876f1a95afad8d7610397d838178219265d4e724e3f68517a515a6&source=constructor'"
+        x-bind:src="loadIframe && 'https://yandex.ru/map-widget/v1/?um=constructor%3A5b5208d222e747be96db5eb2737664bf8809a39c2f57c50d720f558548c1380f&amp;source=constructor'"
         x-on:load.window="setTimeout(() => loadIframe = true)"
         width="100%"
         height="300"
