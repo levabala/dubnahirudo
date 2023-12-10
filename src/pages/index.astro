@@ -18,37 +18,18 @@ import YandexMap from '../components/YandexMap.astro';
     <Main>
         <Section>
             <SectionBlock>
-                <SectionHeader>Кто мы</SectionHeader>
+                <SectionHeader>О нас</SectionHeader>
                 <p class="text-center">
-                    Добро пожаловать в Клинику Гирудотерапии – ваш путь к заботе
-                    о здоровье с использованием безопасных и эффективных методов
-                    лечения.
+                    Добро пожаловать в <b>
+                        Клинику <span class="whitespace-nowrap">
+                            Гирудотерапии и Рефлексотерапии
+                        </span>
+                    </b> – ваш путь к заботе о здоровье с использованием
+                    безопасных и эффективных методов лечения.
                 </p>
             </SectionBlock>
         </Section>
         <Section class="bg-neutral-content dark:bg-neutral">
-            <SectionBlock>
-                <SectionHeader>Где и когда нас найти</SectionHeader>
-                <div class="text-center">
-                    <span class="whitespace-nowrap">Московская обл.</span>,
-                    <span class="whitespace-nowrap">г. Дубна</span>,
-                    <span class="whitespace-nowrap">пр-т Боголюбова</span>, д.39
-                    (вход со двора)
-                </div>
-            </SectionBlock>
-
-            <SectionBlock>
-                <div class="text-center">Вторник, Четверг 13-19</div>
-                <div class="text-center">Суббота 10-14</div>
-            </SectionBlock>
-
-            <SectionBlock>
-                <a href="tel:+79037755656" class="link block text-center">
-                    +7(903)775-56-56
-                </a>
-            </SectionBlock>
-        </Section>
-        <Section>
             <Image
                 src={doctorCrop}
                 alt="доктор"
@@ -68,6 +49,31 @@ import YandexMap from '../components/YandexMap.astro';
                 Мастера Традиционной Китайской Медицины - Фалева Алексея
                 Ивановича.
             </p>
+        </Section>
+        <Section>
+            <SectionBlock>
+                <SectionHeader>Адрес и часы приема</SectionHeader>
+                <div class="text-center">
+                    <span class="whitespace-nowrap">Московская обл.</span>,
+                    <span class="whitespace-nowrap">г. Дубна</span>,
+                    <span class="whitespace-nowrap">пр-т Боголюбова</span>, д.39
+                    (вход со двора)
+                </div>
+            </SectionBlock>
+
+            <SectionBlock>
+                <div class="text-center">Вторник, Четверг 13-19</div>
+                <div class="text-center">Суббота 10-14</div>
+            </SectionBlock>
+
+            <SectionBlock>
+                <a href="tel:+79037755656" class="link block text-center">
+                    +7(903)775-56-56
+                </a>
+                <a href="tel:+74962190224" class="link block text-center">
+                    +7(496)219-02-24
+                </a>
+            </SectionBlock>
         </Section>
         <Section class="bg-base-100" fullWidth fullHeight>
             <YandexMap />
@@ -150,11 +156,11 @@ import YandexMap from '../components/YandexMap.astro';
                     </tr>
                     <tr>
                         <td>Сеанс гирудотерапии</td>
-                        <td>от 1000 руб.</td>
+                        <td>от 1300 руб.</td>
                     </tr>
                     <tr>
                         <td>Омоложение лица</td>
-                        <td>от 1500 руб.</td>
+                        <td>от 1800 руб.</td>
                     </tr>
 
                     <tr>
