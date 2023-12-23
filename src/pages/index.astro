@@ -13,6 +13,8 @@ import SectionHeader from '../components/SectionHeader.astro';
 import SectionBlock from '../components/SectionBlock.astro';
 import SectionBlockHeader from '../components/SectionBlockHeader.astro';
 import YandexMap from '../components/YandexMap.astro';
+
+import LicensesList from '../features/LicensesList.astro';
 ---
 
 <Layout title="Клиника Гирудотерапии">
@@ -27,6 +29,19 @@ import YandexMap from '../components/YandexMap.astro';
                         </span>
                     </b> – ваш путь к заботе о здоровье с использованием
                     безопасных и эффективных методов лечения.
+                </p>
+                <p class="text-center">
+                    Мы используем <a class="link inline-block" href="#лицензии">
+                        сертифицированные
+                    </a> и одноразовые пиявки и иглы.
+                </p>
+                <p class="text-center">
+                    Деятельность нашей клиники <a
+                        class="link inline-block"
+                        href="#лицензии"
+                    >
+                        лицензирована
+                    </a>.
                 </p>
             </SectionBlock>
         </Section>
@@ -78,16 +93,16 @@ import YandexMap from '../components/YandexMap.astro';
                     href="https://wa.me/74962190224"
                     class="link flex items-center justify-center text-center"
                 >
-                    <div class="relative mr-1 w-0 h-6">
+                    <div class="relative mr-1 h-6 w-0">
                         <Image
                             src={whatsappIcon}
                             alt="иконка whatsapp"
                             width={32}
                             height={32}
-                            class="absolute top-0 right-0 h-6 w-6 max-w-[32px]"
+                            class="absolute right-0 top-0 h-6 w-6 max-w-[32px]"
                         />
                     </div>
-                    Написать в Whatsapp
+                     Написать в Whatsapp
                 </a>
             </SectionBlock>
         </Section>
@@ -221,13 +236,17 @@ import YandexMap from '../components/YandexMap.astro';
                 </tbody>
             </table>
         </Section>
-        <Section class="flex">
+        <Section class="flex bg-neutral-content py-6 dark:bg-neutral">
             <a
                 href="tel:+79037755656"
                 class="btn btn-primary mx-auto my-0 text-center"
             >
                 Записаться на приeм
             </a>
+        </Section>
+        <Section id="лицензии">
+            <SectionBlockHeader>Сертификаты и лицензии</SectionBlockHeader>
+            <LicensesList />
         </Section>
     </Main>
 

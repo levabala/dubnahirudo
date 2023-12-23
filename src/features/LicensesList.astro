@@ -1,0 +1,42 @@
+---
+import { Image } from 'astro:assets';
+import 'viewerjs/dist/viewer.min.css';
+
+import leech_passport_1 from '../assets/documents/leech_passport.1.jpeg';
+import leech_passport_2 from '../assets/documents/leech_passport.2.jpeg';
+import license2020_1 from '../assets/documents/license2020.1.jpeg';
+import license2020_2 from '../assets/documents/license2020.2.jpeg';
+import license2020_3 from '../assets/documents/license2020.3.jpeg';
+import needle_license_1 from '../assets/documents/needle_license.1.jpg';
+import needle_license_2 from '../assets/documents/needle_license.2.jpg';
+import needle_license_3 from '../assets/documents/needle_license.3.jpg';
+
+const images = [
+    license2020_1,
+    license2020_2,
+    license2020_3,
+    leech_passport_1,
+    leech_passport_2,
+    needle_license_1,
+    needle_license_2,
+    needle_license_3,
+];
+---
+
+<div>
+    <div id="license-images" class="grid grid-cols-2">
+        {
+            images.map((image) => {
+                return (
+                    <Image src={image} height={1000} loading="lazy" alt="img" />
+                );
+            })
+        }
+    </div>
+</div>
+<script>
+    import Viewer from 'viewerjs';
+    new Viewer(document.getElementById('license-images')!, {
+        toolbar: false,
+    });
+</script>
