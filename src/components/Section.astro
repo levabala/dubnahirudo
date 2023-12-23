@@ -3,11 +3,12 @@ interface Props {
     fullWidth?: boolean;
     fullHeight?: boolean;
     class?: string;
+    id?: string;
 }
 
-const { class: className, fullWidth, fullHeight } = Astro.props;
+const { id, class: className, fullWidth, fullHeight } = Astro.props;
 ---
 
-<section class:list={[{ 'px-4': !fullWidth, 'py-4': !fullHeight }, className]}>
+<section id={id} class:list={[{ 'px-4': !fullWidth, 'py-4': !fullHeight }, className]}>
     <slot />
 </section>
