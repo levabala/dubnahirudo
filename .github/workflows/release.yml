@@ -16,7 +16,7 @@ jobs:
 
             - uses: oven-sh/setup-bun@v1
               with:
-                bun-version: latest
+                bun-version: 1.0.19
 
             - name: Get bun store directory
               shell: bash
