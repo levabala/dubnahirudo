@@ -4,6 +4,7 @@ import { Image } from 'astro:assets';
 import doctorCrop from '../assets/doctor-crop.jpg';
 import acupunctureShoulder from '../assets/acupuncture-shoulder.jpg';
 import leechesTopdown from '../assets/leeches_topdown.jpg';
+import whatsappIcon from '../assets/whatsapp-icon.svg';
 
 import Layout from '../layouts/Layout.astro';
 import Main from '../layouts/Main.astro';
@@ -72,6 +73,21 @@ import YandexMap from '../components/YandexMap.astro';
                 </a>
                 <a href="tel:+74962190224" class="link block text-center">
                     +7(496)219-02-24
+                </a>
+                <a
+                    href="https://wa.me/74962190224"
+                    class="link flex items-center justify-center text-center"
+                >
+                    <div class="relative mr-1 w-0 h-6">
+                        <Image
+                            src={whatsappIcon}
+                            alt="иконка whatsapp"
+                            width={32}
+                            height={32}
+                            class="absolute top-0 right-0 h-6 w-6 max-w-[32px]"
+                        />
+                    </div>
+                    Написать в Whatsapp
                 </a>
             </SectionBlock>
         </Section>
