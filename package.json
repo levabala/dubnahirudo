@@ -8,8 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "tsc": "tsc --noEmit",
-    "postinstall": "cd node_modules/sharp && bun install"
+    "tsc": "tsc --noEmit"
   },
   "dependencies": {
     "@astrojs/alpinejs": "^0.3.0",
@@ -19,7 +18,7 @@
     "astro": "^3.0.12",
     "daisyui": "^3.7.3",
     "posthog-js": "^1.93.6",
-    "sharp": "^0.32.5",
+    "sharp": "^0.33.1",
     "tailwindcss": "^3.0.24",
     "typescript": "^5.2.2",
     "viewerjs": "^1.11.6"
