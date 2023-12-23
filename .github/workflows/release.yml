@@ -27,9 +27,7 @@ jobs:
               name: Setup bun cache
               with:
                   path: ${{ env.STORE_PATH }}
-                  key: ${{ runner.os }}-bun-store-${{ hashFiles('**/bun.lockb') }}
-                  restore-keys: |
-                      ${{ runner.os }}-bun-store-
+                  key: ${{ runner.os }}-${{ env.cache-name }}-bun-store-${{ hashFiles('**/bun.lockb') }}
 
             - name: Install dependencies
               run: bun install --production --frozen-lockfile --cache-dir $STORE_PATH
