@@ -120,8 +120,8 @@ jobs:
                       echo "✓ .env file created:"
                       cat .env
 
-                      echo "=== Downloading latest configuration files ==="
-                      curl -o docker-compose.yml https://raw.githubusercontent.com/levabala/dubnahirudo/main/docker-compose.yml
+                      echo "=== Downloading configuration files for tag ${{ github.ref_name }} ==="
+                      curl -o docker-compose.yml https://raw.githubusercontent.com/levabala/dubnahirudo/${{ github.ref_name }}/docker-compose.yml
                       if [ $? -eq 0 ]; then
                         echo "✓ docker-compose.yml downloaded"
                       else
@@ -129,14 +129,13 @@ jobs:
                         exit 1
                       fi
 
-                      curl -o init-letsencrypt.sh https://raw.githubusercontent.com/levabala/dubnahirudo/main/init-letsencrypt.sh
+                      curl -o init-letsencrypt.sh https://raw.githubusercontent.com/levabala/dubnahirudo/${{ github.ref_name }}/init-letsencrypt.sh
                       if [ $? -eq 0 ]; then
                         echo "✓ init-letsencrypt.sh downloaded"
                       else
                         echo "✗ Failed to download init-letsencrypt.sh"
                         exit 1
                       fi
-
                       chmod +x init-letsencrypt.sh
                       echo "✓ Made init-letsencrypt.sh executable"
 
