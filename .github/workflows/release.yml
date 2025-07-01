@@ -115,7 +115,7 @@ jobs:
                       docker pull cr.yandex/${{ secrets.YA_CLOUD_REGISTRY }}/dubnahirudo:${{ github.sha }}
 
                       # Initialize SSL certificates if needed
-                      if [ ! -d "/etc/letsencrypt/live/www.dubna-hirudo.ru" ]; then
+                      if [ ! -d "./certbot/conf/live/www.dubna-hirudo.ru" ]; then
                         ./init-letsencrypt.sh
                       fi
 
