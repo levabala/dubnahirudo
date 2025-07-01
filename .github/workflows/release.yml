@@ -91,7 +91,7 @@ jobs:
                           sleep 30
                           
                           echo "=== Verifying rollback health ==="
-                          if curl -f -s --max-time 10 https://www.dubna-hirudo.ru > /dev/null; then
+                          if curl -f -s --max-time 10 https://dubna-hirudo.ru > /dev/null; then
                             echo "✅ ROLLBACK SUCCESSFUL - Site is responding"
                             docker-compose ps
                             exit 0
@@ -116,7 +116,7 @@ jobs:
                         while [ $attempt -le $max_attempts ]; do
                           echo "Health check attempt $attempt/$max_attempts"
                           
-                          if curl -f -s --max-time 10 https://www.dubna-hirudo.ru > /dev/null; then
+                          if curl -f -s --max-time 10 https://dubna-hirudo.ru > /dev/null; then
                             echo "✅ Health check passed - Site is responding"
                             return 0
                           fi
