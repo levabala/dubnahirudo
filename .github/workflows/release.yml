@@ -96,28 +96,84 @@ jobs:
                         echo "Docker Compose installed successfully"
                       fi
 
+                      echo "=== Starting deployment process ==="
+
+                      echo "=== Logging into Docker registry ==="
                       echo '${{ secrets.YA_CLOUD_LOGIN_KEY }}' | docker login --username json_key --password-stdin cr.yandex
+                      if [ $? -eq 0 ]; then
+                        echo "✓ Docker login successful"
+                      else
+                        echo "✗ Docker login failed"
+                        exit 1
+                      fi
 
-                      # Stop existing containers
+                      echo "=== Stopping existing containers ==="
                       docker-compose down || true
+                      echo "✓ Containers stopped"
 
-                      # Create .env file for SSL configuration
+                      echo "=== Creating .env file ==="
                       cat > .env << EOF
                       DOMAIN=www.dubna-hirudo.ru
                       EMAIL=admin@dubna-hirudo.ru
                       DOCKER_IMAGE=cr.yandex/${{ secrets.YA_CLOUD_REGISTRY }}/dubnahirudo:${{ github.sha }}
                       EOF
+                      echo "✓ .env file created:"
+                      cat .env
 
-                       # Download latest docker-compose.yml
-                       curl -o docker-compose.yml https://raw.githubusercontent.com/levabala/dubnahirudo/main/docker-compose.yml
-                       curl -o init-letsencrypt.sh https://raw.githubusercontent.com/levabala/dubnahirudo/main/init-letsencrypt.sh
-                       chmod +x init-letsencrypt.sh                      # Pull new image
-                      docker pull cr.yandex/${{ secrets.YA_CLOUD_REGISTRY }}/dubnahirudo:${{ github.sha }}
-
-                      # Initialize SSL certificates if needed
-                      if [ ! -d "./certbot/conf/live/www.dubna-hirudo.ru" ]; then
-                        ./init-letsencrypt.sh
+                      echo "=== Downloading latest configuration files ==="
+                      curl -o docker-compose.yml https://raw.githubusercontent.com/levabala/dubnahirudo/main/docker-compose.yml
+                      if [ $? -eq 0 ]; then
+                        echo "✓ docker-compose.yml downloaded"
                       else
-                        # Start services normally if certificates exist
-                        docker-compose up -d
+                        echo "✗ Failed to download docker-compose.yml"
+                        exit 1
                       fi
+
+                      curl -o init-letsencrypt.sh https://raw.githubusercontent.com/levabala/dubnahirudo/main/init-letsencrypt.sh
+                      if [ $? -eq 0 ]; then
+                        echo "✓ init-letsencrypt.sh downloaded"
+                      else
+                        echo "✗ Failed to download init-letsencrypt.sh"
+                        exit 1
+                      fi
+
+                      chmod +x init-letsencrypt.sh
+                      echo "✓ Made init-letsencrypt.sh executable"
+
+                      echo "=== Pulling new Docker image ==="
+                      docker pull cr.yandex/${{ secrets.YA_CLOUD_REGISTRY }}/dubnahirudo:${{ github.sha }}
+                      if [ $? -eq 0 ]; then
+                        echo "✓ Docker image pulled successfully"
+                      else
+                        echo "✗ Failed to pull Docker image"
+                        exit 1
+                      fi
+
+                      echo "=== Checking for SSL certificates ==="
+                      if [ ! -d "./certbot/conf/live/www.dubna-hirudo.ru" ]; then
+                        echo "⚠ SSL certificates not found, initializing..."
+                        ./init-letsencrypt.sh
+                        if [ $? -eq 0 ]; then
+                          echo "✓ SSL certificates initialized successfully"
+                        else
+                          echo "✗ SSL certificate initialization failed"
+                          exit 1
+                        fi
+                      else
+                        echo "✓ SSL certificates found, starting services normally"
+                        docker-compose up -d
+                        if [ $? -eq 0 ]; then
+                          echo "✓ Services started successfully"
+                        else
+                          echo "✗ Failed to start services"
+                          exit 1
+                        fi
+                      fi
+
+                      echo "=== Checking container status ==="
+                      docker-compose ps
+
+                      echo "=== Checking nginx logs ==="
+                      docker-compose logs nginx | tail -20
+
+                      echo "=== Deployment completed ==="
