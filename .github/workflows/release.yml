@@ -117,7 +117,7 @@ jobs:
                       # Initialize SSL certificates if needed
                       if [ ! -d "./certbot/conf/live/www.dubna-hirudo.ru" ]; then
                         ./init-letsencrypt.sh
+                      else
+                        # Start services normally if certificates exist
+                        docker-compose up -d
                       fi
-
-                      # Start services
-                      docker-compose up -d
