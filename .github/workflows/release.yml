@@ -113,16 +113,21 @@ jobs:
                       curl -o init-letsencrypt.sh https://raw.githubusercontent.com/levabala/dubnahirudo/main/init-letsencrypt.sh
                       chmod +x init-letsencrypt.sh
 
-                      # Download nginx configuration
-                      mkdir -p nginx
-                      curl -o nginx/nginx.conf https://raw.githubusercontent.com/levabala/dubnahirudo/main/nginx/nginx.conf
+                       # Download nginx configuration
+                       rm -rf nginx
+                       mkdir -p nginx
+                       curl -L -f -o nginx/nginx.conf https://raw.githubusercontent.com/levabala/dubnahirudo/main/nginx/nginx.conf
 
-                      # Verify nginx.conf was downloaded correctly
-                      if [ ! -f "nginx/nginx.conf" ]; then
-                        echo "Error: nginx.conf was not downloaded properly"
-                        exit 1
-                      fi
-
+                       # Verify nginx.conf was downloaded correctly
+                       if [ ! -f "nginx/nginx.conf" ] || [ ! -s "nginx/nginx.conf" ]; then
+                         echo "Error: nginx.conf was not downloaded properly"
+                         ls -la nginx/
+                         cat nginx/nginx.conf || echo "nginx.conf is empty or doesn't exist"
+                         exit 1
+                       fi
+                       
+                       echo "nginx.conf downloaded successfully:"
+                       ls -la nginx/nginx.conf
                       # Pull new image
                       docker pull cr.yandex/${{ secrets.YA_CLOUD_REGISTRY }}/dubnahirudo:${{ github.sha }}
 
