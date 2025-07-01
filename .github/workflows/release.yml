@@ -108,12 +108,14 @@ jobs:
                       DOCKER_IMAGE=cr.yandex/${{ secrets.YA_CLOUD_REGISTRY }}/dubnahirudo:${{ github.sha }}
                       EOF
 
-                      # Create docker-compose.yml if not exists
-                      if [ ! -f docker-compose.yml ]; then
-                        curl -o docker-compose.yml https://raw.githubusercontent.com/levabala/dubnahirudo/main/docker-compose.yml
-                        curl -o init-letsencrypt.sh https://raw.githubusercontent.com/levabala/dubnahirudo/main/init-letsencrypt.sh
-                        chmod +x init-letsencrypt.sh
-                      fi
+                      # Download latest docker-compose.yml and nginx config
+                      curl -o docker-compose.yml https://raw.githubusercontent.com/levabala/dubnahirudo/main/docker-compose.yml
+                      curl -o init-letsencrypt.sh https://raw.githubusercontent.com/levabala/dubnahirudo/main/init-letsencrypt.sh
+                      chmod +x init-letsencrypt.sh
+
+                      # Download nginx configuration
+                      mkdir -p nginx
+                      curl -o nginx/nginx.conf https://raw.githubusercontent.com/levabala/dubnahirudo/main/nginx/nginx.conf
 
                       # Pull new image
                       docker pull cr.yandex/${{ secrets.YA_CLOUD_REGISTRY }}/dubnahirudo:${{ github.sha }}
