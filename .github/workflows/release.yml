@@ -117,6 +117,12 @@ jobs:
                       mkdir -p nginx
                       curl -o nginx/nginx.conf https://raw.githubusercontent.com/levabala/dubnahirudo/main/nginx/nginx.conf
 
+                      # Verify nginx.conf was downloaded correctly
+                      if [ ! -f "nginx/nginx.conf" ]; then
+                        echo "Error: nginx.conf was not downloaded properly"
+                        exit 1
+                      fi
+
                       # Pull new image
                       docker pull cr.yandex/${{ secrets.YA_CLOUD_REGISTRY }}/dubnahirudo:${{ github.sha }}
 
