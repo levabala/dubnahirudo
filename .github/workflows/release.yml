@@ -113,7 +113,7 @@ jobs:
 
                       echo "=== Creating .env file ==="
                       cat > .env << EOF
-                      DOMAIN=www.dubna-hirudo.ru
+                      DOMAIN=dubna-hirudo.ru
                       EMAIL=admin@dubna-hirudo.ru
                       DOCKER_IMAGE=cr.yandex/${{ secrets.YA_CLOUD_REGISTRY }}/dubnahirudo:${{ github.sha }}
                       EOF
@@ -149,7 +149,7 @@ jobs:
                       fi
 
                       echo "=== Checking for SSL certificates ==="
-                      if [ ! -d "./certbot/conf/live/www.dubna-hirudo.ru" ]; then
+                      if [ ! -d "./certbot/conf/live/dubna-hirudo.ru" ]; then
                         echo "⚠ SSL certificates not found, initializing..."
                         ./init-letsencrypt.sh
                         if [ $? -eq 0 ]; then
