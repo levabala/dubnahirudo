@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
     nginx:
-        build: .
+        image: ${DOCKER_IMAGE:-dubnahirudo:latest}
         ports:
             - '80:80'
             - '443:443'

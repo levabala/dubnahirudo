@@ -16,7 +16,7 @@ jobs:
 
             - uses: oven-sh/setup-bun@v1
               with:
-                bun-version: 1.0.19
+                  bun-version: 1.0.19
 
             - name: Get bun store directory
               shell: bash
@@ -88,11 +88,30 @@ jobs:
 
                       echo '${{ secrets.YA_CLOUD_LOGIN_KEY }}' | docker login --username json_key --password-stdin cr.yandex
 
-                      CONTAINER_ID=$(docker container ls  | grep 'dubnahirudo' | awk '{print $1}')
-                      if [ $CONTAINER_ID ]; then
-                        docker stop $CONTAINER_ID
+                      # Stop existing containers
+                      docker-compose down || true
+
+                      # Create .env file for SSL configuration
+                      cat > .env << EOF
+                      DOMAIN=www.dubna-hirudo.ru
+                      EMAIL=admin@dubna-hirudo.ru
+                      DOCKER_IMAGE=cr.yandex/${{ secrets.YA_CLOUD_REGISTRY }}/dubnahirudo:${{ github.sha }}
+                      EOF
+
+                      # Create docker-compose.yml if not exists
+                      if [ ! -f docker-compose.yml ]; then
+                        curl -o docker-compose.yml https://raw.githubusercontent.com/levabala/dubnahirudo/main/docker-compose.yml
+                        curl -o init-letsencrypt.sh https://raw.githubusercontent.com/levabala/dubnahirudo/main/init-letsencrypt.sh
+                        chmod +x init-letsencrypt.sh
                       fi
 
-                      IMAGE_ID=cr.yandex/${{ secrets.YA_CLOUD_REGISTRY }}/dubnahirudo:${{ github.sha }}
-                      docker pull $IMAGE_ID
-                      docker run -d -p 80:80 -p 443:443 -v /etc/ngnix/certs:/certs $IMAGE_ID
+                      # Pull new image
+                      docker pull cr.yandex/${{ secrets.YA_CLOUD_REGISTRY }}/dubnahirudo:${{ github.sha }}
+
+                      # Initialize SSL certificates if needed
+                      if [ ! -d "/etc/letsencrypt/live/www.dubna-hirudo.ru" ]; then
+                        ./init-letsencrypt.sh
+                      fi
+
+                      # Start services
+                      docker-compose up -d
