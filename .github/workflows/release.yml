@@ -75,6 +75,65 @@ jobs:
                   key: ${{ secrets.YA_CLOUD_PROD_KEY }}
                   port: ${{ secrets.YA_CLOUD_PROD_PORT }}
                   script: |
+                      # Rollback function
+                      rollback_deployment() {
+                        echo "🔄 INITIATING ROLLBACK PROCEDURE"
+                        
+                        if [ -f ".env.backup" ] && [ -f "docker-compose.yml.backup" ]; then
+                          echo "=== Restoring previous configuration ==="
+                          mv .env.backup .env
+                          mv docker-compose.yml.backup docker-compose.yml
+                          
+                          echo "=== Starting previous version ==="
+                          docker-compose up -d
+                          
+                          echo "=== Waiting for services to stabilize ==="
+                          sleep 30
+                          
+                          echo "=== Verifying rollback health ==="
+                          if curl -f -s --max-time 10 https://www.dubna-hirudo.ru > /dev/null; then
+                            echo "✅ ROLLBACK SUCCESSFUL - Site is responding"
+                            docker-compose ps
+                            exit 0
+                          else
+                            echo "❌ ROLLBACK FAILED - Site still not responding"
+                            docker-compose logs nginx | tail -20
+                            exit 1
+                          fi
+                        else
+                          echo "❌ NO BACKUP FOUND - Cannot rollback automatically"
+                          echo "Manual intervention required!"
+                          exit 1
+                        fi
+                      }
+
+                      # Health check function
+                      health_check() {
+                        echo "=== Performing health check ==="
+                        local max_attempts=12
+                        local attempt=1
+                        
+                        while [ $attempt -le $max_attempts ]; do
+                          echo "Health check attempt $attempt/$max_attempts"
+                          
+                          if curl -f -s --max-time 10 https://www.dubna-hirudo.ru > /dev/null; then
+                            echo "✅ Health check passed - Site is responding"
+                            return 0
+                          fi
+                          
+                          echo "⏳ Site not ready, waiting 10 seconds..."
+                          sleep 10
+                          attempt=$((attempt + 1))
+                        done
+                        
+                        echo "❌ Health check failed after $max_attempts attempts"
+                        return 1
+                      }
+
+                      # Set error handling
+                      set -e
+                      trap 'echo "❌ Deployment failed at line $LINENO"; rollback_deployment' ERR
+
                       if [ -x "$(command -v docker)" ]; then
                         echo "Docker is already installed"
                       else
@@ -100,79 +159,79 @@ jobs:
 
                       echo "=== Logging into Docker registry ==="
                       echo '${{ secrets.YA_CLOUD_LOGIN_KEY }}' | docker login --username json_key --password-stdin cr.yandex
-                      if [ $? -eq 0 ]; then
-                        echo "✓ Docker login successful"
-                      else
-                        echo "✗ Docker login failed"
-                        exit 1
+                      echo "✓ Docker login successful"
+
+                      echo "=== Backing up current configuration ==="
+                      if [ -f ".env" ]; then
+                        cp .env .env.backup
+                        echo "✓ .env backed up"
+                      fi
+                      if [ -f "docker-compose.yml" ]; then
+                        cp docker-compose.yml docker-compose.yml.backup
+                        echo "✓ docker-compose.yml backed up"
                       fi
 
-                      echo "=== Stopping existing containers ==="
-                      docker-compose down || true
-                      echo "✓ Containers stopped"
+                      echo "=== Pulling new Docker image ==="
+                      docker pull cr.yandex/${{ secrets.YA_CLOUD_REGISTRY }}/dubnahirudo:${{ github.sha }}
+                      echo "✓ Docker image pulled successfully"
 
-                      echo "=== Creating .env file ==="
-                      cat > .env << EOF
+                      echo "=== Downloading configuration files for tag ${{ github.ref_name }} ==="
+                      curl -o docker-compose.yml.new https://raw.githubusercontent.com/levabala/dubnahirudo/${{ github.ref_name }}/docker-compose.yml
+                      echo "✓ docker-compose.yml downloaded"
+
+                      curl -o init-letsencrypt.sh https://raw.githubusercontent.com/levabala/dubnahirudo/${{ github.ref_name }}/init-letsencrypt.sh
+                      echo "✓ init-letsencrypt.sh downloaded"
+                      chmod +x init-letsencrypt.sh
+                      echo "✓ Made init-letsencrypt.sh executable"
+
+                      echo "=== Creating new .env file ==="
+                      cat > .env.new << EOF
                       DOMAIN=dubna-hirudo.ru
                       EMAIL=admin@dubna-hirudo.ru
                       DOCKER_IMAGE=cr.yandex/${{ secrets.YA_CLOUD_REGISTRY }}/dubnahirudo:${{ github.sha }}
                       EOF
-                      echo "✓ .env file created:"
-                      cat .env
-
-                      echo "=== Downloading configuration files for tag ${{ github.ref_name }} ==="
-                      curl -o docker-compose.yml https://raw.githubusercontent.com/levabala/dubnahirudo/${{ github.ref_name }}/docker-compose.yml
-                      if [ $? -eq 0 ]; then
-                        echo "✓ docker-compose.yml downloaded"
-                      else
-                        echo "✗ Failed to download docker-compose.yml"
-                        exit 1
-                      fi
-
-                      curl -o init-letsencrypt.sh https://raw.githubusercontent.com/levabala/dubnahirudo/${{ github.ref_name }}/init-letsencrypt.sh
-                      if [ $? -eq 0 ]; then
-                        echo "✓ init-letsencrypt.sh downloaded"
-                      else
-                        echo "✗ Failed to download init-letsencrypt.sh"
-                        exit 1
-                      fi
-                      chmod +x init-letsencrypt.sh
-                      echo "✓ Made init-letsencrypt.sh executable"
-
-                      echo "=== Pulling new Docker image ==="
-                      docker pull cr.yandex/${{ secrets.YA_CLOUD_REGISTRY }}/dubnahirudo:${{ github.sha }}
-                      if [ $? -eq 0 ]; then
-                        echo "✓ Docker image pulled successfully"
-                      else
-                        echo "✗ Failed to pull Docker image"
-                        exit 1
-                      fi
+                      echo "✓ .env.new file created"
 
                       echo "=== Checking for SSL certificates ==="
                       if [ ! -d "./certbot/conf/live/dubna-hirudo.ru" ]; then
                         echo "⚠ SSL certificates not found, initializing..."
+                        mv .env.new .env
+                        mv docker-compose.yml.new docker-compose.yml
                         ./init-letsencrypt.sh
-                        if [ $? -eq 0 ]; then
-                          echo "✓ SSL certificates initialized successfully"
-                        else
-                          echo "✗ SSL certificate initialization failed"
-                          exit 1
-                        fi
+                        echo "✓ SSL certificates initialized successfully"
                       else
-                        echo "✓ SSL certificates found, starting services normally"
+                        echo "✓ SSL certificates found, performing blue-green deployment"
+                        
+                        # Apply new configuration
+                        mv .env.new .env
+                        mv docker-compose.yml.new docker-compose.yml
+                        
+                        echo "=== Starting new version ==="
                         docker-compose up -d
-                        if [ $? -eq 0 ]; then
-                          echo "✓ Services started successfully"
+                        echo "✓ New version started"
+                        
+                        echo "=== Waiting for services to stabilize ==="
+                        sleep 30
+                        
+                        # Perform health check
+                        if health_check; then
+                          echo "✅ DEPLOYMENT SUCCESSFUL"
+                          
+                          echo "=== Cleaning up old images ==="
+                          docker image prune -f || true
+                          
+                          echo "=== Removing backup files ==="
+                          rm -f .env.backup docker-compose.yml.backup
                         else
-                          echo "✗ Failed to start services"
-                          exit 1
+                          echo "❌ DEPLOYMENT FAILED - Health check failed"
+                          rollback_deployment
                         fi
                       fi
 
-                      echo "=== Checking container status ==="
+                      echo "=== Final container status ==="
                       docker-compose ps
 
-                      echo "=== Checking nginx logs ==="
+                      echo "=== Final nginx logs ==="
                       docker-compose logs nginx | tail -20
 
-                      echo "=== Deployment completed ==="
+                      echo "=== Deployment completed successfully ==="
