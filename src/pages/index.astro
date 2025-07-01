@@ -150,7 +150,7 @@ import LicensesList from '../features/LicensesList.astro';
                 <li>лишний вес</li>
             </ul>
         </Section>
-        <Section fullWidth fullHeight>
+        <Section class="image-only" fullWidth fullHeight>
             <Image
                 src={acupunctureShoulder}
                 height={700}
@@ -267,7 +267,7 @@ import LicensesList from '../features/LicensesList.astro';
                 нормализации работы человеческого организма.
             </p>
         </Section>
-        <Section fullWidth fullHeight>
+        <Section class="image-only" fullWidth fullHeight>
             <Image
                 src={leechesTopdown}
                 height={700}
@@ -379,11 +379,11 @@ import LicensesList from '../features/LicensesList.astro';
     }
 
     /* Автоматическое чередование цветов секций */
-    :global(main section:nth-child(even)) {
+    :global(main section:nth-child(2n+1):not(.image-only)) {
         background-color: hsl(var(--nc));
     }
     
-    :global(main section:nth-child(even).dark) {
+    :global(main section:nth-child(2n+1):not(.image-only).dark) {
         background-color: hsl(var(--n));
     }
 </style>
