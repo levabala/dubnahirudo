@@ -86,6 +86,16 @@ jobs:
                         sudo chmod 666 /var/run/docker.sock
                       fi
 
+                      # Install docker-compose if not present
+                      if [ -x "$(command -v docker-compose)" ]; then
+                        echo "Docker Compose is already installed"
+                      else
+                        echo "Installing Docker Compose..."
+                        sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+                        sudo chmod +x /usr/local/bin/docker-compose
+                        echo "Docker Compose installed successfully"
+                      fi
+
                       echo '${{ secrets.YA_CLOUD_LOGIN_KEY }}' | docker login --username json_key --password-stdin cr.yandex
 
                       # Stop existing containers
