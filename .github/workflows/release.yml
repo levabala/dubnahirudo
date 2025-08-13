@@ -175,10 +175,10 @@ jobs:
 
                        echo "=== Creating new .env file ==="
                        cat > .env.new << 'EOF'
-DOMAIN=dubna-hirudo.ru
-EMAIL=admin@dubna-hirudo.ru
-DOCKER_IMAGE=dubnahirudo:${{ github.sha }}
-EOF
+                       DOMAIN=dubna-hirudo.ru
+                       EMAIL=admin@dubna-hirudo.ru
+                       DOCKER_IMAGE=dubnahirudo:${{ github.sha }}
+                       EOF
                        echo "✓ .env.new file created"
 
                       echo "=== Checking for SSL certificates ==="
