@@ -174,11 +174,9 @@ jobs:
                       echo "✓ Made init-letsencrypt.sh executable"
 
                        echo "=== Creating new .env file ==="
-                       cat > .env.new << 'EOF'
-DOMAIN=dubna-hirudo.ru
-EMAIL=admin@dubna-hirudo.ru
-DOCKER_IMAGE=dubnahirudo:${{ github.sha }}
-EOF
+                       echo "DOMAIN=dubna-hirudo.ru" > .env.new
+                       echo "EMAIL=admin@dubna-hirudo.ru" >> .env.new
+                       echo "DOCKER_IMAGE=dubnahirudo:${{ github.sha }}" >> .env.new
                        echo "✓ .env.new file created"
 
                       echo "=== Checking for SSL certificates ==="
