@@ -144,7 +144,7 @@ jobs:
                         echo "Docker Compose installed successfully"
                       fi
 
-                      echo "=== Starting deployment process ==="
+                       echo "=== Starting deployment process ==="
 
                        echo "=== Loading Docker image from transferred file ==="
                        docker load < /tmp/dubnahirudo-${{ github.sha }}.tar.gz
