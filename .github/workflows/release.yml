@@ -19,11 +19,11 @@ jobs:
             - uses: actions/cache@v4
               name: Setup bun cache
               with:
-                  path: ${{ env.STORE_PATH }}
+                  path: ~/.bun/install/cache
                   key: ${{ runner.os }}-bun-store-${{ hashFiles('**/bun.lockb') }}
 
             - name: Install dependencies
-              run: bun install --production --frozen-lockfile --cache-dir $STORE_PATH
+              run: bun install --production --frozen-lockfile
             # setup bun - end
 
             - name: Check types
