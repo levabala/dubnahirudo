@@ -22,7 +22,7 @@ This project uses Bun as the package manager.
 
 -   **Tagging Strategy:** Use semantic versioning (v0.1.x) for releases. Increment the patch number by 1 from the previous tag (e.g., v0.1.43 → v0.1.44). Create git tags to trigger automated deployment via GitHub Actions. Always create a separate commit for tagging.
 -   **Deployment:** Push tags with `git push origin main --tags` to trigger the release workflow that deploys to production server.
--   **Docker:** Uses docker-compose with nginx + certbot for SSL-enabled deployment to www.dubna-hirudo.ru.
+-   **Docker:** Uses docker-compose for containerized deployment.
 
 ## Development Environment
 

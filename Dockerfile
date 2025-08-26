@@ -1,5 +1,8 @@
-FROM nginx:alpine
-COPY dist/ /usr/share/nginx/html/
-COPY other/ /usr/share/nginx/html/
-COPY nginx/nginx.conf /etc/nginx/nginx.conf
-EXPOSE 80 443
+FROM node:alpine
+WORKDIR /app
+COPY dist/ ./dist/
+COPY other/ ./other/
+RUN npm install -g serve
+ENV PORT=3000
+EXPOSE $PORT
+CMD sh -c "serve -s dist -l $PORT"

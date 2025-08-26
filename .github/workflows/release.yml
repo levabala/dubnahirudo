@@ -80,13 +80,13 @@ jobs:
                           sleep 10
                           
                           echo "=== Verifying rollback health ==="
-                          if curl -f -s --max-time 10 https://dubna-hirudo.ru > /dev/null; then
+                          if curl -f -s --max-time 10 http://localhost:${PORT:-3000} > /dev/null; then
                             echo "✅ ROLLBACK SUCCESSFUL - Site is responding"
                             docker-compose ps
                             exit 0
                           else
                             echo "❌ ROLLBACK FAILED - Site still not responding"
-                            docker-compose logs nginx | tail -20
+                            docker-compose logs app | tail -20
                             exit 1
                           fi
                         else
@@ -105,7 +105,7 @@ jobs:
                         while [ $attempt -le $max_attempts ]; do
                           echo "Health check attempt $attempt/$max_attempts"
                           
-                          if curl -f -s --max-time 10 https://dubna-hirudo.ru > /dev/null; then
+                          if curl -f -s --max-time 10 http://localhost:${PORT:-3000} > /dev/null; then
                             echo "✅ Health check passed - Site is responding"
                             return 0
                           fi
@@ -168,57 +168,41 @@ jobs:
                       curl -o docker-compose.yml.new https://raw.githubusercontent.com/levabala/dubnahirudo/${{ github.ref_name }}/docker-compose.yml
                       echo "✓ docker-compose.yml downloaded"
 
-                      curl -o init-letsencrypt.sh https://raw.githubusercontent.com/levabala/dubnahirudo/${{ github.ref_name }}/init-letsencrypt.sh
-                      echo "✓ init-letsencrypt.sh downloaded"
-                      chmod +x init-letsencrypt.sh
-                      echo "✓ Made init-letsencrypt.sh executable"
-
                        echo "=== Creating new .env file ==="
-                       echo "DOMAIN=dubna-hirudo.ru" > .env.new
-                       echo "EMAIL=admin@dubna-hirudo.ru" >> .env.new
-                       echo "DOCKER_IMAGE=dubnahirudo:${{ github.sha }}" >> .env.new
+                       echo "DOCKER_IMAGE=dubnahirudo:${{ github.sha }}" > .env.new
+                       echo "PORT=${PORT:-3000}" >> .env.new
                        echo "✓ .env.new file created"
 
-                      echo "=== Checking for SSL certificates ==="
-                      if [ ! -d "./certbot/conf/live/dubna-hirudo.ru" ]; then
-                        echo "⚠ SSL certificates not found, initializing..."
-                        mv .env.new .env
-                        mv docker-compose.yml.new docker-compose.yml
-                        ./init-letsencrypt.sh
-                        echo "✓ SSL certificates initialized successfully"
+                      echo "=== Performing deployment ==="
+                      # Apply new configuration
+                      mv .env.new .env
+                      mv docker-compose.yml.new docker-compose.yml
+
+                      echo "=== Starting new version ==="
+                      docker-compose up -d
+                      echo "✓ New version started"
+
+                      echo "=== Waiting for services to stabilize ==="
+                      sleep 30
+
+                      # Perform health check
+                      if health_check; then
+                        echo "✅ DEPLOYMENT SUCCESSFUL"
+                        
+                        echo "=== Cleaning up old images ==="
+                        docker image prune -f || true
+                        
+                        echo "=== Removing backup files ==="
+                        rm -f .env.backup docker-compose.yml.backup
                       else
-                        echo "✓ SSL certificates found, performing blue-green deployment"
-                        
-                        # Apply new configuration
-                        mv .env.new .env
-                        mv docker-compose.yml.new docker-compose.yml
-                        
-                        echo "=== Starting new version ==="
-                        docker-compose up -d
-                        echo "✓ New version started"
-                        
-                        echo "=== Waiting for services to stabilize ==="
-                        sleep 30
-                        
-                        # Perform health check
-                        if health_check; then
-                          echo "✅ DEPLOYMENT SUCCESSFUL"
-                          
-                          echo "=== Cleaning up old images ==="
-                          docker image prune -f || true
-                          
-                          echo "=== Removing backup files ==="
-                          rm -f .env.backup docker-compose.yml.backup
-                        else
-                          echo "❌ DEPLOYMENT FAILED - Health check failed"
-                          rollback_deployment
-                        fi
+                        echo "❌ DEPLOYMENT FAILED - Health check failed"
+                        rollback_deployment
                       fi
 
                       echo "=== Final container status ==="
                       docker-compose ps
 
-                      echo "=== Final nginx logs ==="
-                      docker-compose logs nginx | tail -20
+                      echo "=== Final app logs ==="
+                      docker-compose logs app | tail -20
 
                       echo "=== Deployment completed successfully ==="

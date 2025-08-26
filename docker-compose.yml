@@ -1,23 +1,8 @@
 services:
-    nginx:
+    app:
         image: ${DOCKER_IMAGE}
         ports:
-            - '80:80'
-            - '443:443'
-        volumes:
-            - ./certbot/conf:/etc/letsencrypt
-            - ./certbot/www:/var/www/certbot
-            - ./certbot/logs:/var/log/letsencrypt
-        depends_on:
-            - certbot
-        command: "nginx -g 'daemon off;'"
-        restart: unless-stopped
-
-    certbot:
-        image: certbot/certbot
-        volumes:
-            - ./certbot/conf:/etc/letsencrypt
-            - ./certbot/www:/var/www/certbot
-            - ./certbot/logs:/var/log/letsencrypt
-        entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+            - '${PORT:-3000}:${PORT:-3000}'
+        environment:
+            - PORT=${PORT:-3000}
         restart: unless-stopped
