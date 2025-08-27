@@ -6,7 +6,7 @@ on:
             - 'v[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
-    build-and-publish:
+    build-and-deploy:
         runs-on: ubuntu-latest
         steps:
             # test - start
@@ -35,174 +35,16 @@ jobs:
               run: bun run build
             # build - end
 
-            # docker build and transfer - start
-            - name: Build Docker image
-              run: |
-                  docker build -t dubnahirudo:${{ github.sha }} .
-                  docker save dubnahirudo:${{ github.sha }} | gzip > dubnahirudo-${{ github.sha }}.tar.gz
-
-            - name: Transfer image to VM
+            # transfer dist files - start
+            - name: Transfer dist files to VM
               uses: appleboy/scp-action@v1.0.0
               with:
                   host: ${{ secrets.YA_CLOUD_PROD_HOST }}
                   username: ${{ secrets.YA_CLOUD_PROD_USERNAME }}
                   key: ${{ secrets.YA_CLOUD_PROD_KEY }}
                   port: ${{ secrets.YA_CLOUD_PROD_PORT }}
-                  source: 'dubnahirudo-${{ github.sha }}.tar.gz'
-                  target: '/tmp/'
-            # docker build and transfer - end
-
-    remote-deploy:
-        runs-on: ubuntu-latest
-        needs: [build-and-publish]
-        steps:
-            - name: executing remote ssh commands using password
-              uses: appleboy/ssh-action@v1.2.2
-              with:
-                  host: ${{ secrets.YA_CLOUD_PROD_HOST }}
-                  username: ${{ secrets.YA_CLOUD_PROD_USERNAME }}
-                  key: ${{ secrets.YA_CLOUD_PROD_KEY }}
-                  port: ${{ secrets.YA_CLOUD_PROD_PORT }}
-                  script: |
-                      # Rollback function
-                      rollback_deployment() {
-                        echo "🔄 INITIATING ROLLBACK PROCEDURE"
-                        
-                        if [ -f ".env.backup" ] && [ -f "docker-compose.yml.backup" ]; then
-                          echo "=== Restoring previous configuration ==="
-                          mv .env.backup .env
-                          mv docker-compose.yml.backup docker-compose.yml
-                          
-                          echo "=== Starting previous version ==="
-                          docker-compose up -d
-                          
-                          echo "=== Waiting for services to stabilize ==="
-                          sleep 10
-                          
-                          echo "=== Verifying rollback health ==="
-                          if curl -f -s --max-time 10 http://localhost:${PORT:-3000} > /dev/null; then
-                            echo "✅ ROLLBACK SUCCESSFUL - Site is responding"
-                            docker-compose ps
-                            exit 0
-                          else
-                            echo "❌ ROLLBACK FAILED - Site still not responding"
-                            docker-compose logs app | tail -20
-                            exit 1
-                          fi
-                        else
-                          echo "❌ NO BACKUP FOUND - Cannot rollback automatically"
-                          echo "Manual intervention required!"
-                          exit 1
-                        fi
-                      }
-
-                      # Health check function
-                      health_check() {
-                        echo "=== Performing health check ==="
-                        local max_attempts=12
-                        local attempt=1
-                        
-                        while [ $attempt -le $max_attempts ]; do
-                          echo "Health check attempt $attempt/$max_attempts"
-                          
-                          if curl -f -s --max-time 10 http://localhost:${PORT:-3000} > /dev/null; then
-                            echo "✅ Health check passed - Site is responding"
-                            return 0
-                          fi
-                          
-                          echo "⏳ Site not ready, waiting 10 seconds..."
-                          sleep 10
-                          attempt=$((attempt + 1))
-                        done
-                        
-                        echo "❌ Health check failed after $max_attempts attempts"
-                        return 1
-                      }
-
-                      # Set error handling
-                      set -e
-                      trap 'echo "❌ Deployment failed at line $LINENO"; rollback_deployment' ERR
-
-                      if [ -x "$(command -v docker)" ]; then
-                        echo "Docker is already installed"
-                      else
-                        curl -fsSL https://get.docker.com -o get-docker.sh
-                        sh get-docker.sh
-
-                        sudo systemctl enable docker
-                        sudo systemctl start docker
-                        sudo chmod 666 /var/run/docker.sock
-                      fi
-
-                      # Install docker-compose if not present
-                      if [ -x "$(command -v docker-compose)" ]; then
-                        echo "Docker Compose is already installed"
-                      else
-                        echo "Installing Docker Compose..."
-                        sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-                        sudo chmod +x /usr/local/bin/docker-compose
-                        echo "Docker Compose installed successfully"
-                      fi
-
-                       echo "=== Starting deployment process ==="
-
-                       echo "=== Loading Docker image from transferred file ==="
-                       docker load < /tmp/dubnahirudo-${{ github.sha }}.tar.gz
-                       echo "✓ Docker image loaded successfully"
-
-                       echo "=== Cleaning up transferred file ==="
-                       rm -f /tmp/dubnahirudo-${{ github.sha }}.tar.gz
-                       echo "✓ Transferred file cleaned up"
-
-                       echo "=== Backing up current configuration ==="
-                       if [ -f ".env" ]; then
-                         cp .env .env.backup
-                         echo "✓ .env backed up"
-                       fi
-                       if [ -f "docker-compose.yml" ]; then
-                         cp docker-compose.yml docker-compose.yml.backup
-                         echo "✓ docker-compose.yml backed up"
-                       fi
-
-                      echo "=== Downloading configuration files for tag ${{ github.ref_name }} ==="
-                      curl -o docker-compose.yml.new https://raw.githubusercontent.com/levabala/dubnahirudo/${{ github.ref_name }}/docker-compose.yml
-                      echo "✓ docker-compose.yml downloaded"
-
-                       echo "=== Creating new .env file ==="
-                       echo "DOCKER_IMAGE=dubnahirudo:${{ github.sha }}" > .env.new
-                       echo "PORT=${PORT:-3000}" >> .env.new
-                       echo "✓ .env.new file created"
-
-                      echo "=== Performing deployment ==="
-                      # Apply new configuration
-                      mv .env.new .env
-                      mv docker-compose.yml.new docker-compose.yml
-
-                      echo "=== Starting new version ==="
-                      docker-compose up -d
-                      echo "✓ New version started"
-
-                      echo "=== Waiting for services to stabilize ==="
-                      sleep 30
-
-                      # Perform health check
-                      if health_check; then
-                        echo "✅ DEPLOYMENT SUCCESSFUL"
-                        
-                        echo "=== Cleaning up old images ==="
-                        docker image prune -f || true
-                        
-                        echo "=== Removing backup files ==="
-                        rm -f .env.backup docker-compose.yml.backup
-                      else
-                        echo "❌ DEPLOYMENT FAILED - Health check failed"
-                        rollback_deployment
-                      fi
-
-                      echo "=== Final container status ==="
-                      docker-compose ps
-
-                      echo "=== Final app logs ==="
-                      docker-compose logs app | tail -20
-
-                      echo "=== Deployment completed successfully ==="
+                  source: 'dist/*'
+                  target: '~/my-server-nginx/dubna-hirudo-dist/'
+                  strip_components: 1
+                  overwrite: true
+            # transfer dist files - end
