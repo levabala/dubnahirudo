@@ -20,8 +20,13 @@ This project uses Bun as the package manager.
 
 ## Deployment and Versioning
 
--   **Tagging Strategy:** Use semantic versioning (v0.1.x) for releases. Increment the patch number by 1 from the previous tag (e.g., v0.1.43 → v0.1.44). Create git tags to trigger automated deployment via GitHub Actions. Always create a separate commit for tagging.
--   **Deployment:** Push tags with `git push origin main --tags` to trigger the release workflow that deploys to production server.
+-   **Deployment Process:** Follow these steps for deployment: (do not use a TODO list)
+    1. Check current changes: `git status && git diff`
+    2. Determine appropriate commit message based on changes
+    3. Stage and commit changes (split into several commits via consecutive `git add ... && git commit ...` if necessary): `git add <ALL_NECESSARY_FILES_WITHOUT_JUNK> && git commit -m "message"`
+    4. Update version: `npm version patch`
+    5. Push with tags: `git push --follow-tags`
+-   **Tagging Strategy:** Use semantic versioning for releases. The `npm version patch` command automatically increments the patch number and creates a git tag.
 -   **Docker:** Uses docker-compose for containerized deployment.
 
 ## Development Environment

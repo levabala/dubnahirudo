@@ -3,6 +3,7 @@ import DarkModeScript from '../scripts/darkModeScript.astro';
 import PosthogScript from '../scripts/posthogScript.astro';
 import VkScript from '../scripts/vkScript.astro';
 import YaScript from '../scripts/yaScript.astro';
+import DatadogScript from '../scripts/datadogScript.astro';
 
 interface Props {
     title: string;
@@ -27,6 +28,7 @@ const { title } = Astro.props;
         <PosthogScript />
         <VkScript />
         <YaScript />
+        <DatadogScript />
     </head>
     <body class="text-base bg-base-200">
         <slot />
