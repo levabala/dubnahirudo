@@ -280,7 +280,7 @@ import LicensesList from '../features/LicensesList.astro';
             <table class="table table-zebra">
                 <tbody>
                     <tr>
-                        <th>Гирудотерапия</th>
+                        <th colspan="2">Гирудотерапия</th>
                     </tr>
                     <tr>
                         <td>Сеанс гирудотерапии</td>
@@ -292,7 +292,7 @@ import LicensesList from '../features/LicensesList.astro';
                     </tr>
 
                     <tr>
-                        <th>Рефлексотерапия</th>
+                        <th colspan="2">Рефлексотерапия</th>
                     </tr>
                     <tr>
                         <td>Антитабак</td>
@@ -372,6 +372,15 @@ import LicensesList from '../features/LicensesList.astro';
     .table :where(th, td) {
         padding-top: 0.5rem;
         padding-bottom: 0.5rem;
+    }
+
+    /* Стили для таблицы цен */
+    .table tbody tr:has(th) {
+        background-color: transparent !important;
+    }
+
+    .table tbody tr:has(td) {
+        background-color: white !important;
     }
 
     /* Автоматическое чередование цветов секций */
